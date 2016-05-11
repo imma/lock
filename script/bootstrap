@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+function bootstrap {
+  local shome="$(cd -P -- "$(dirname -- "$BASH_SOURCE")/.." && pwd -P)"
+  source "$shome/script/profile"
+
+  case "$(uname -s)" in
+    Darwin)
+      pkg ensure sysutils/lockf
+      ;;
+    Linux)
+      sudo aptitude install -y run-one
+      ;;
+  esac
+}
+
+bootstrap
