@@ -6,12 +6,12 @@ function bootstrap {
 
   case "$(uname -s)" in
     Darwin)
-      if [[ -x "$(which lockf 2>&- || true)" ]]; then
+      if [[ -x "$(which lockf 2>/dev/null || true)" ]]; then
         return 0
       fi
       ;;
     Linux)
-      if [[ -x "$(which flock 2>&- || true)" ]]; then
+      if [[ -x "$(which flock 2>/dev/null || true)" ]]; then
         return 0
       fi
       ;;
