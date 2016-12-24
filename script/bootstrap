@@ -9,7 +9,7 @@ function bootstrap {
       pkg ensure sysutils/lockf
       ;;
     Linux)
-      sudo aptitude install -y run-one
+      sudo -E aptitude install -y run-one
       ;;
   esac
 }
