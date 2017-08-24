@@ -5,13 +5,7 @@ function main {
   local digest="$1"; shift
 
   while true; do
-    if aws dynamodb put-item \
-      --table terraform_state_lock \
-      --item "$(jq -n --arg lock "$nm_lock" --arg digest "$digest" '{LockID: {S: $lock}, Digest: {S: $digest}}')" \
-      --condition-expression '#lock <> :lock OR (#lock = :lock AND #digest = :digest)' \
-      --expression-attribute-names "$(jq -n '{"#lock": "LockID", "#digest": "Digest"}')" \
-      --expression-attribute-values "$(jq -n --arg lock "$nm_lock" --arg digest "$digest" '{":lock": {S: $lock}, ":digest": {S: $digest}}')"; then
-    
+    if ddlock acquire "$nm_lock" "$digest"; then
       "$@" || true
       ddlock leave "$nm_lock"
       break

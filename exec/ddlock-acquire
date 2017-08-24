@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+function main {
+  local nm_lock="$1"; shift
+  local digest="$1"; shift
+
+  aws dynamodb put-item \
+    --table terraform_state_lock \
+    --item "$(jq -n --arg lock "$nm_lock" --arg digest "$digest" '{LockID: {S: $lock}, Digest: {S: $digest}}')" \
+    --condition-expression '#lock <> :lock OR (#lock = :lock AND #digest = :digest)' \
+    --expression-attribute-names "$(jq -n '{"#lock": "LockID", "#digest": "Digest"}')" \
+    --expression-attribute-values "$(jq -n --arg lock "$nm_lock" --arg digest "$digest" '{":lock": {S: $lock}, ":digest": {S: $digest}}')"
+}
+
+source sub "$BASH_SOURCE" "$@"
