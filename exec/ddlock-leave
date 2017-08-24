@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+function main {
+  local nm_lock="$1"; shift
+
+  aws dynamodb delete-item \
+    --table terraform_state_lock \
+    --key "$(jq -n --arg lock "$nm_lock" '{LockID: {S: $lock}}')" \
+    --condition-expression '#lock <> :lock OR (#lock = :lock)' \
+    --expression-attribute-names "$(jq -n '{"#lock": "LockID"}')" \
+    --expression-attribute-values "$(jq -n --arg lock "$nm_lock" '{":lock": {S: $lock}}')"
+}
+
+source sub "$BASH_SOURCE" "$@"
