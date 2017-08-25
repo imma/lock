@@ -6,8 +6,8 @@ function main {
 
   while true; do
     if ddlock acquire "$nm_lock" "$digest"; then
+      trap "ddlock leave $nm_lock" EXIT
       "$@" || true
-      ddlock leave "$nm_lock"
       break
     fi
 
