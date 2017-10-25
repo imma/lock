@@ -10,7 +10,7 @@ function bootstrap {
         return 0
       fi
       ;;
-    Ubuntu|Amazon)
+    *)
       if ! type -P flock >/dev/null; then
         return 0
       fi
