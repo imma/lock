@@ -4,6 +4,8 @@ function bootstrap {
   local shome="$(cd -P -- "${BASH_SOURCE%/*}/.." && pwd -P)"
   source "$shome/script/profile"
 
+  return 0 # TODO figure out what to do with these lock commands
+
   case "${DISTRIB_ID}" in
     Darwin)
       if ! type -P lockf >/dev/null; then
